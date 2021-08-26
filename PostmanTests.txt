@@ -1,0 +1,1764 @@
+Postman: Collection test
+
+
+    var jsonData= pm.response.json();
+    var request_method = pm.request.method;
+
+
+    //Check Status as per request method
+    response_status={
+        "responsestat_200":200,
+        "responsestat_201":201,
+        "responsestat_401":401
+        
+    };
+
+    if(request_method === "GET"){
+        pm.test("API call successful : Access token Created", function(){
+            pm.response.to.have.status(200);
+            pm.response.to.not.be.error;
+            pm.response.to.be.withBody;
+            pm.response.to.be.json;
+        } )
+    }else if(request_method === "POST"){
+        pm.test("API call successful : Access token Created", function(){
+            pm.response.to.have.status(201);
+            pm.response.to.not.be.error;
+            pm.response.to.be.withBody;
+            pm.response.to.be.json;
+        } )
+    }
+    //Check if Response time is lesser than 1000
+
+    pm.test("Response Time to be less 1000ms" , function(){
+        pm.expect(pm.response.responseTime).to.be.below(10900);
+    })
+
+
+    //Content-Type in Response Header
+    pm.test("Content type is present and its value is" , function(){
+        pm.response.to.have.header("Content-Type");
+    pm.response.headers.get("Content-Type" , "application/json");
+        
+        
+    });
+    // //User in Header
+    // pm.test("user is present and its value is" , function(){
+    //     pm.response.to.have.header("user");
+    // pm.response.headers.get("user" , "kulshi");
+        
+        
+    // });
+    //Persistent-Auth in Header
+    // pm.test("Persistent-Auth is present and its value is" , function(){
+    //     pm.response.to.have.header("Persistent-Auth");
+    // pm.response.headers.get("Persistent-Auth" , "true");
+        
+        
+    // });
+
+    //Date is present in Header
+    pm.test("Date is present in the header", function () {
+        jsondata=responseHeaders.hasOwnProperty("Date");
+        console.log('Type for the header Date is', typeof jsondata);
+        
+    });
+    if(jsondata === true){
+    console.log(pm.response.headers.get('Date'));
+    }
+    else{
+        console.log("Sorry No date found");
+    }
+    //token in response header
+    pm.test("token in the Response Header", function(){
+        jsondata=responseHeaders.hasOwnProperty("token");
+    
+    })
+    //Content-Length in the response header
+    pm.test("Content-Length in the response header", function () {
+        jsondata=responseHeaders.hasOwnProperty("Content-Length");
+        
+        
+    });
+    if(jsondata === true){
+    console.log(pm.response.headers.get('Content-Length'));
+    }
+    else{
+        console.log("Sorry No Content-Length found");
+    }
+    if(request_method === "POST"){
+        var reqBody = request.data;
+    console.log(reqBody);
+    var jsonData=pm.response.json();
+
+
+
+
+    pm.test("Assert Succcess Post Response", function(){
+        if(jsonData['status']){
+        pm.expect (jsonData.status).to.be.oneOf(["Success",true]) ;
+        
+        }
+        else if(jsonData['statusCount']){
+        pm.expect (jsonData.statusCount).to.be.oneOf([0,1,2,3,4,5,6,7,8,9])
+        
+        }
+        
+            
+        
+        else{
+            pm.response.to.be.withBody;
+        }
+    })
+
+    pm.test("Asert Request Body Not Null", function(){
+    pm.expect(reqBody).to.not.be.empty;
+    })
+
+    }
+    if(request_method === "DELETE"){
+        
+    var jsonData = pm.response.json();
+    pm.test("Assert Succcess DELETE Response  ID ", function () {
+        pm.response.to.have.status(200);
+    });
+
+    pm.test("Asert Request Body Not Null", function(){
+    pm.expect(jsonData).to.be.eql(1);
+    })
+
+
+    }
+
+
+else {
+    pm.test.skip()
+}
+
+
+
+
+----------------------------------------------Tests-----------------
+
+
+
+var jsonData = pm.response.json();
+var conversionData;
+var jsonValue;
+
+function valCallBack(type,value,callback)
+{
+    if(typeof(type)==='string')
+    {
+        switch (typeof(value)) 
+        {
+      case "number":
+        conversionData=value.toString();
+        callback(conversionData);
+        break;
+      case "object":
+        conversionData=JSON.stringify(value);
+        callback(conversionData);
+        break;
+      case "boolean":
+         conversionData=JSON.stringify(value);
+        callback(conversionData);
+        break;
+      case "function":
+        conversionData=JSON.stringify(value);
+        callback(conversionData);
+        break;
+        }
+    }
+    else if(typeof(type)==='boolean'){
+        switch(typeof value){
+            case "string":
+               switch(value.toLowerCase()) 
+                         {
+            case "false": 
+                conversionData= false;
+                callback(conversionData);
+                break;   
+            case "true": 
+                conversionData= true;
+                callback(conversionData);
+                break; 
+            default: conversionData=true;
+                callback(conversionData);
+              
+          }
+
+                callback(conversionData);
+                break;  
+        }
+    }
+    else if(typeof(type)==='number')
+    {
+        
+    switch (typeof(value)) 
+        {
+      case "string":
+        conversionData=parseInt(value);
+        callback(conversionData);
+        break;
+      case "object":
+        conversionData=JSON.stringify(value);
+        callback(conversionData);
+        break;
+      case "boolean":
+         conversionData=JSON.stringify(value);
+        callback(conversionData);
+        break;
+      case "function":
+        conversionData=JSON.stringify(value);
+        callback(conversionData);
+        break;
+        }
+    }else if(typeof(type)==='undefined')
+    {
+        console.log(typeof(a));
+        callback(conversionData);
+    }else if(typeof(type)==='object')
+    {
+        switch (typeof(value)) 
+        {
+      case "number":
+        var num1=value.toString();
+        conversionData=JSON.parse(num1);
+        callback(conversionData);
+        break;
+      case "string":
+        conversionData=JSON.parse(value);
+        callback(conversionData);
+        break;
+      case "boolean":
+         conversionData=JSON.parse(value);
+        callback(conversionData);
+        break;
+      case "function":
+        conversionData=JSON.stringify(value);
+        callback(conversionData);
+        break;
+        }
+    }
+    
+    else if(typeof(type)==='function')
+    {
+        
+        callback(conversionData);
+    }
+    return  conversionData;
+}
+
+// console.log("Test******************");
+
+// // //Response code is 200 or 201 as per the request type
+// // var jsonRequestData=pm.request.method;
+// // //Response code is 200 or 201 as per the request type
+// // if(jsonRequestData === "GET" ){
+// // var responseCodeAssertion=pm.test("API call successfull.:Access token created", function () {
+    
+// //     var code= parseInt(pm.environment.get("responsestat_200"));
+// //     pm.response.to.have.status(code);
+    
+// //     pm.test("Body is not Blank", function () {
+// //     jsonBodyData=pm.response.to.have.body();
+// //     pm.expect(jsonBodyData).to.not.be.empty;
+// // });
+
+// // //Assert the current environment
+// // pm.test("Check if environment is production", function () {
+// //       pm.expect(pm.environment.get("env")).to.equal("OM");
+// //       console.log(pm.environment.get("env"));
+// //   });
+// // //Assert the key count with assertions 
+// // pm.test("Assert the key count with number of assertion", function () {
+// //       var count_keys0 = Object.keys(jsonData[0]);
+// //       var count_keys1 = Object.keys(jsonData[1]);
+// //       console.log("count of keys object 0 : "+count_keys0.length +"count of keys object 1 : "+count_keys1.length);
+      
+// //       pm.expect(pm.environment.get("env")).to.equal("OM");
+// //       console.log(pm.environment.get("env"));
+// //   });
+
+// // });
+    
+// // }
+// /*else if(jsonRequestData === "POST"){
+// pm.test("API call successful12345.:Access token created", function () {
+//    var code= parseInt(pm.environment.get("responsestat_201"));    
+//     pm.response.to.have.status(code);
+    
+//     pm.test("Body is not Blank", function () {
+//     jsonBodyData=pm.response.to.have.body();
+//     pm.expect(jsonBodyData).to.not.be.empty;
+// });*/
+
+// //Assert the current environment
+// /*pm.test("Check if environment is production", function () {
+//       pm.expect(pm.environment.get("env")).to.equal("OM");
+    
+//       console.log(pm.environment.get("env"));
+//   });
+
+// });
+    
+// }*/
+
+// /*if(responseCodeAssertion){
+//    const paramsString = request.url.split('ids=')[1];
+//    console.log(paramsString)
+//    var params = paramsString.split(",")
+// //   params.length
+
+// console.log("count of id as parameter : "+params.length);
+// }*/
+// console.log("jsonData*********"+jsonData.results.length)
+ for(var j =0 ; j<jsonData.results.length  ; j++){
+    console.log("length of object " + jsonData.results.length)
+ jsonValue=jsonData.results[j];
+    
+//*******Assertion of Key : boardexStatus People_ids******
+pm.test("Assert Type of boardexStatus People_ids "+j, function(){
+var valBoardexStatus_response=jsonValue.boardexStatus;
+var valBoardexStatus_dataSheet=pm.variables.get("person_boardexStatus"+j);
+var typeOfBoardexStatus_dataSheet= pm.variables.get("typeOfNumber");
+var typeOfBoardexStatus_response=typeof valBoardexStatus_response;
+
+console.log("jsonValue.boardexStatus **"+typeof(jsonValue.boardexStatus));
+console.log("data sheet value **** "+ data['typeOfNumber']);
+
+var testResult = pm.expect(typeof (jsonValue.boardexStatus)).to.be.eql(data['typeOfNumber']);
+
+if(testResult)
+{
+    pm.test("Assert value of boardexStatus People_ids" +j, function()
+    {
+        
+      if(typeof(data['person_boardexStatus0']) == typeof(jsonValue.boardexStatus)){
+
+        pm.expect(jsonValue.boardexStatus).to.eql(data['person_boardexStatus0']); 
+          
+      }
+
+      else
+      {
+        valCallBack(jsonValue.boardexStatus,data['person_boardexStatus'+j], function(){});
+         var ConValueBoardexStatus=conversionData;
+       pm.expect(jsonValue.boardexStatus).to.eql(ConValueBoardexStatus);      
+        }
+    });
+}
+else{ postman.setNextRequest();}
+});
+
+//*******Assertion of Key : boardexData People_ids******
+
+pm.test("Assert Type of boardexData People_ids"+j, function(){
+var valBoardexData_response=jsonValue.boardexData;
+var valBoardexData_dataSheet=pm.variables.get("boardexData"+j);
+var typeOfBoardexData_dataSheet= pm.variables.get("typeOfObject");
+var typeOfBoardexData_response=typeof valBoardexData_response;
+
+console.log("jsonValue.boardexData **"+typeof(jsonValue.boardexData));
+console.log("data sheet value **** "+ data['typeOfObject']);
+console.log("BoardexData sheet Value"+data['person_boardexData'+j]);
+
+var testResult =  pm.expect(data['typeOfObject']).to.be.eql(typeof jsonValue.boardexData);
+        
+if(testResult)
+{
+    pm.test("Assert value of boardexData People_ids"+j, function()
+    {
+        
+      if(typeof(data["person_boardexData"+j]) == typeof(jsonValue.boardexData)){
+
+        pm.expect(jsonValue.boardexData).to.eql(data["person_boardexData"+j]); 
+          
+      }
+
+      else
+      {
+        valCallBack(valBoardexData_response,valBoardexData_dataSheet, function(){});
+       
+       var ConValueBoardexData=conversionData;
+       pm.expect(valBoardexData_response).to.eql(ConValueBoardexData);      
+        }
+    });
+}
+else{ postman.setNextRequest();}
+});
+
+//*******Assertion of Key : DCFStatus People_ids******
+pm.test("Assert Type of DCFStatus People_ids"+j, function(){
+var valDCFStatus_response=jsonValue.DCFStatus;
+var valDCFStatus_dataSheet=pm.variables.get("person_DCFStatus"+j);
+var typeOfDCFStatus_dataSheet= pm.variables.get("typeOfNumber");
+var typeOfDCFStatus_response=typeof valDCFStatus_response;
+
+var testResult =  pm.expect(typeOfDCFStatus_dataSheet).to.be.eql(typeOfDCFStatus_response);
+        
+if(testResult)
+{
+    pm.test("Assert value of DCFStatus People_ids"+j, function()
+    {
+        
+      if(typeof(valDCFStatus_dataSheet) == typeof(valDCFStatus_response)){
+
+        pm.expect(valDCFStatus_response).to.eql(valDCFStatus_dataSheet); 
+          
+      }
+
+      else
+      {
+        valCallBack(valDCFStatus_response,valDCFStatus_dataSheet, function(){});
+       
+       var ConValueDCFStatus=conversionData;
+       pm.expect(valDCFStatus_response).to.eql(ConValueDCFStatus);      
+        }
+    });
+}
+else{ postman.setNextRequest();}
+});
+
+
+//*******Assertion of Key : createdAt People_ids******
+
+pm.test("Assert Type of createdAt People_ids"+j, function(){
+var valCreatedAt_response=jsonValue.createdAt;
+var valCreatedAt_dataSheet=pm.variables.get("person_createdAt"+j);
+var typeOfCreatedAt_dataSheet= pm.variables.get("typeOfString");
+var typeOfCreatedAt_response=typeof valCreatedAt_response;
+
+var testResult =  pm.expect(typeOfCreatedAt_dataSheet).to.be.eql(typeof valCreatedAt_response);
+        
+if(testResult)
+{
+    pm.test("Assert value of createdAt People_ids"+j, function()
+    {
+        
+      if(typeof(valCreatedAt_dataSheet) == typeof(valCreatedAt_response)){
+
+        pm.expect(valCreatedAt_response).to.eql(valCreatedAt_dataSheet); 
+          
+      }
+
+      else
+      {
+        valCallBack(valCreatedAt_response,valCreatedAt_dataSheet, function(){});
+       
+       var ConValueCreatedAt=conversionData;
+       pm.expect(valCreatedAt_response).to.eql(ConValueCreatedAt);      
+        }
+    });
+}
+else{ postman.setNextRequest();}
+});
+
+//*******Assertion of Key : lastModifiedAt People_ids******
+pm.test("Assert Type of lastModifiedAt People_ids"+j, function(){
+var valLastModifiedAt_response=jsonValue.lastModifiedAt;
+var valLastModifiedAt_dataSheet=pm.variables.get("person_lastModifiedAt"+j);
+var typeOfLastModifiedAt_dataSheet= pm.variables.get("typeOfString");
+var typeOfLastModifiedAt_response=typeof valLastModifiedAt_response;
+
+var testResult =  pm.expect(typeOfLastModifiedAt_dataSheet).to.be.eql(typeof valLastModifiedAt_response);
+        
+if(testResult)
+{
+    pm.test("Assert value of lastModifiedAt People_ids"+j, function()
+    {
+        
+      if(typeof(valLastModifiedAt_dataSheet) == typeof(valLastModifiedAt_response)){
+
+        pm.expect(valLastModifiedAt_response).to.eql(valLastModifiedAt_dataSheet); 
+          
+      }
+
+      else
+      {
+        valCallBack(valLastModifiedAt_response,valLastModifiedAt_dataSheet, function(){});
+       
+       var ConValueLastModifiedAt=conversionData;
+       pm.expect(valLastModifiedAt_response).to.eql(ConValueLastModifiedAt);      
+        }
+    });
+}
+else{ postman.setNextRequest();}
+});
+
+//*******Assertion of Key : id People_ids******
+pm.test("Assert Type of id People_ids"+j, function(){
+var valId_response=jsonValue.id;
+var valId_dataSheet=pm.variables.get("person_id"+j);
+var typeOfId_dataSheet= pm.variables.get("typeOfString");
+var typeOfId_response=typeof valId_response;
+
+var testResult =  pm.expect(typeOfId_dataSheet).to.be.eql(typeof valId_response);
+        
+if(testResult)
+{
+    pm.test("Assert value of id People_ids"+j, function()
+    {
+        
+      if(typeof(valId_dataSheet) == typeof(valId_response)){
+
+        pm.expect(valId_response).to.eql(valId_dataSheet); 
+          
+      }
+
+      else
+      {
+        valCallBack(valId_response,valId_dataSheet, function(){});
+       
+       var ConValueId=conversionData;
+       pm.expect(valId_response).to.eql(ConValueId);      
+        }
+    });
+}
+else{ postman.setNextRequest();}
+});
+
+//*******Assertion of Key : firstName People_ids******
+
+
+pm.test("Assert Type of firstName People_ids"+j, function(){
+var valFirstName_response=jsonValue.firstName;
+var valFirstName_dataSheet=pm.variables.get("person_firstName"+j);
+var typeOfFirstName_dataSheet= pm.variables.get("typeOfString");
+var typeOfFirstName_response=typeof valFirstName_response;
+
+var testResult =  pm.expect(typeOfFirstName_dataSheet).to.be.eql(typeof valFirstName_response);
+        
+if(testResult)
+{
+    pm.test("Assert value of firstName People_ids"+j, function()
+    {
+        
+      if(typeof(valFirstName_dataSheet) == typeof(valFirstName_response)){
+
+        pm.expect(valFirstName_response).to.eql(valFirstName_dataSheet); 
+          
+      }
+
+      else
+      {
+        valCallBack(valFirstName_response,valFirstName_dataSheet, function(){});
+       
+       var ConValueFirstName=conversionData;
+       pm.expect(valFirstName_response).to.eql(ConValueFirstName);      
+        }
+    });
+}
+else{ postman.setNextRequest();}
+});
+
+//*******Assertion of Key : lastName People_ids******
+
+pm.test("Assert Type of lastName People_ids"+j, function(){
+var valLastName_response=jsonValue.lastName;
+var valLastName_dataSheet=pm.variables.get("person_lastName"+j);
+var typeOfLastName_dataSheet= pm.variables.get("typeOfString");
+var typeOfLastName_response=typeof valLastName_response;
+
+var testResult =  pm.expect(typeOfLastName_dataSheet).to.be.eql(typeof valLastName_response);
+        
+if(testResult)
+{
+    pm.test("Assert value of lastName People_ids"+j, function()
+    {
+        
+      if(typeof(valLastName_dataSheet) == typeof(valLastName_response)){
+
+        pm.expect(valLastName_response).to.eql(valLastName_dataSheet); 
+          
+      }
+
+      else
+      {
+        valCallBack(valLastName_response,valLastName_dataSheet, function(){});
+       
+       var ConValueLastName=conversionData;
+       pm.expect(valLastName_response).to.eql(ConValueLastName);      
+        }
+    });
+}
+else{ postman.setNextRequest();}
+});
+
+//*******Assertion of Key : group1 People_ids******
+pm.test("Assert Type of group1 People_ids"+j, function(){
+var valGroup1_response=jsonValue.group1;
+var valGroup1_dataSheet=pm.variables.get("person_group1"+j);
+var typeOfGroup1_dataSheet= pm.variables.get("typeOfObject");
+var typeOfGroup1_response=typeof valGroup1_response;
+
+var testResult =  pm.expect(typeOfGroup1_dataSheet).to.be.eql(typeof valGroup1_response);
+        
+if(testResult)
+{
+    pm.test("Assert value of group1 People_ids"+j, function()
+    {
+        
+      if(typeof(valGroup1_dataSheet) == typeof(valGroup1_response)){
+
+        pm.expect(valGroup1_response).to.eql(valGroup1_dataSheet); 
+          
+      }
+
+      else
+      {
+        valCallBack(valGroup1_response,valGroup1_dataSheet, function(){});
+       
+       var ConValueGroup1=conversionData;
+       pm.expect(valGroup1_response).to.eql(ConValueGroup1);      
+        }
+    });
+}
+else{ postman.setNextRequest();}
+});
+
+
+//*******Assertion of Key : group2 People_ids******
+
+pm.test("Assert Type of group2 People_ids"+j, function(){
+var valGroup2_response=jsonValue.group2;
+var valGroup2_dataSheet=pm.variables.get("person_group2"+j);
+var typeOfGroup2_dataSheet= pm.variables.get("typeOfObject");
+var typeOfGroup2_response=typeof valGroup2_response;
+
+var testResult =  pm.expect(typeOfGroup2_dataSheet).to.be.eql(typeof valGroup2_response);
+        
+if(testResult)
+{
+    pm.test("Assert value of group2 People_ids"+j, function()
+    {
+        
+      if(typeof(valGroup2_dataSheet) == typeof(valGroup2_response)){
+
+        pm.expect(valGroup2_response).to.eql(valGroup2_dataSheet); 
+          
+      }
+
+      else
+      {
+        valCallBack(valGroup2_response,valGroup2_dataSheet, function(){});
+       
+       var ConValueGroup2=conversionData;
+       pm.expect(valGroup2_response).to.eql(ConValueGroup2);      
+        }
+    });
+}
+else{ postman.setNextRequest();}
+});
+//*******Assertion of Key : priorityId People_ids******
+
+pm.test("Assert Type of priorityId People_ids"+j, function(){
+var valPriorityId_response=jsonValue.priorityId;
+var valPriorityId_dataSheet=pm.variables.get("person_priorityId"+j);
+var typeOfPriorityId_dataSheet= pm.variables.get("typeOfObject");
+var typeOfPriorityId_response=typeof valPriorityId_response;
+
+var testResult =  pm.expect(typeOfPriorityId_dataSheet).to.be.eql(typeof valPriorityId_response);
+        
+if(testResult)
+{
+    pm.test("Assert value of priorityId People_ids"+j, function()
+    {
+        
+      if(typeof(valPriorityId_dataSheet) == typeof(valPriorityId_response)){
+
+        pm.expect(valPriorityId_response).to.eql(valPriorityId_dataSheet); 
+          
+      }
+
+      else
+      {
+        valCallBack(valPriorityId_response,valPriorityId_dataSheet, function(){});
+       
+       var ConValuePriorityId=conversionData;
+       pm.expect(valPriorityId_response).to.eql(ConValuePriorityId);      
+        }
+    });
+}
+else{ postman.setNextRequest();}
+});
+
+//*******Assertion of Key : todoNote People_ids******
+
+pm.test("Assert Type of todoNote People_ids"+j, function(){
+var valTodoNote_response=jsonValue.todoNote;
+var valTodoNote_dataSheet=pm.variables.get("person_todoNote"+j);
+var typeOfTodoNote_dataSheet= pm.variables.get("typeOfObject");
+var typeOfTodoNote_response=typeof valTodoNote_response;
+
+var testResult =  pm.expect(typeOfTodoNote_dataSheet).to.be.eql(typeof valTodoNote_response);
+        
+if(testResult)
+{
+    pm.test("Assert value of todoNote People_ids"+j, function()
+    {
+        
+      if(typeof(valTodoNote_dataSheet) == typeof(valTodoNote_response)){
+
+        pm.expect(valTodoNote_response).to.eql(valTodoNote_dataSheet); 
+          
+      }
+
+      else
+      {
+        valCallBack(valTodoNote_response,valTodoNote_dataSheet, function(){});
+       
+       var ConValueTodoNote=conversionData;
+       pm.expect(valTodoNote_response).to.eql(ConValueTodoNote);      
+        }
+    });
+}
+else{ postman.setNextRequest();}
+});
+
+//*******Assertion of Key : linkedinProfileUrl People_ids******
+
+pm.test("Assert Type of linkedinProfileUrl People_ids"+j, function(){
+var valLinkedinProfileUrl_response=jsonValue.linkedinProfileUrl;
+var valLinkedinProfileUrl_dataSheet=pm.variables.get("person_linkedinProfileUrl"+j);
+var typeOfLinkedinProfileUrl_dataSheet= pm.variables.get("typeOfObject");
+var typeOfLinkedinProfileUrl_response=typeof valLinkedinProfileUrl_response;
+
+var testResult =  pm.expect(typeOfLinkedinProfileUrl_dataSheet).to.be.eql(typeof valLinkedinProfileUrl_response);
+        
+if(testResult)
+{
+    pm.test("Assert value of linkedinProfileUrl People_ids"+j, function()
+    {
+        
+      if(typeof(valLinkedinProfileUrl_dataSheet) == typeof(valLinkedinProfileUrl_response)){
+
+        pm.expect(valLinkedinProfileUrl_response).to.eql(valLinkedinProfileUrl_dataSheet); 
+          
+      }
+
+      else
+      {
+        valCallBack(valLinkedinProfileUrl_response,valLinkedinProfileUrl_dataSheet, function(){});
+       
+       var ConValueLinkedinProfileUrl=conversionData;
+       pm.expect(valLinkedinProfileUrl_response).to.eql(ConValueLinkedinProfileUrl);      
+        }
+    });
+}
+else{ postman.setNextRequest();}
+});
+
+for(var n=0;n<jsonValue.assistant.length;n++){
+//*******Assertion of Key : assistant People_ids******
+pm.test("Assert Type of assistant phone number"+j, function(){
+var valAssistant_response=jsonValue.assistant[n].phoneNumber;
+var valAssistant_dataSheet=pm.variables.get("assistant_phoneNumber"+j+n);
+var typeOfAssistant_dataSheet= pm.variables.get("typeOfString");
+var typeOfAssistant_response=typeof valAssistant_response;
+
+var testResult =  pm.expect(typeOfAssistant_dataSheet).to.be.eql(typeof valAssistant_response);
+        
+if(testResult)
+{
+    pm.test("Assert value of assistant People_ids"+j, function()
+    {
+        
+      if(typeof(valAssistant_dataSheet) == typeof(valAssistant_response)){
+
+        pm.expect(valAssistant_response).to.eql(valAssistant_dataSheet); 
+          
+      }
+
+      else
+      {
+        valCallBack(valAssistant_response,valAssistant_dataSheet, function(){});
+       
+       var ConValueAssistant=conversionData;
+       pm.expect(valAssistant_response).to.eql(ConValueAssistant);      
+        }
+    });
+}
+else{ postman.setNextRequest();}
+});
+
+}
+
+
+for(var n=0;n<jsonValue.assistant.length;n++){
+//*******Assertion of Key : assistant People_ids******
+pm.test("Assert Type of assistant fullName"+j, function(){
+var valAssistant_response=jsonValue.assistant[n].fullName;
+var valAssistant_dataSheet=pm.variables.get("assistant_fullName"+j+n);
+var typeOfAssistant_dataSheet= pm.variables.get("typeOfString");
+var typeOfAssistant_response=typeof valAssistant_response;
+
+var testResult =  pm.expect(typeOfAssistant_dataSheet).to.be.eql(typeof valAssistant_response);
+        
+if(testResult)
+{
+    pm.test("Assert value of assistant fullName"+j, function()
+    {
+        
+      if(typeof(valAssistant_dataSheet) == typeof(valAssistant_response)){
+
+        pm.expect(valAssistant_response).to.eql(valAssistant_dataSheet); 
+          
+      }
+
+      else
+      {
+        valCallBack(valAssistant_response,valAssistant_dataSheet, function(){});
+       
+       var ConValueAssistant=conversionData;
+       pm.expect(valAssistant_response).to.eql(ConValueAssistant);      
+        }
+    });
+}
+else{ postman.setNextRequest();}
+});
+
+}
+
+for(var n=0;n<jsonValue.assistant.length;n++){
+//*******Assertion of Key : assistant People_ids******
+pm.test("Assert Type of assistant email"+j, function(){
+var valAssistant_response=jsonValue.assistant[n].email;
+var valAssistant_dataSheet=pm.variables.get("assistant_email"+j+n);
+var typeOfAssistant_dataSheet= pm.variables.get("typeOfObject");
+var typeOfAssistant_response=typeof valAssistant_response;
+
+var testResult =  pm.expect(typeOfAssistant_dataSheet).to.be.eql(typeof valAssistant_response);
+        
+if(testResult)
+{
+    pm.test("Assert value of assistant email"+j, function()
+    {
+        
+      if(typeof(valAssistant_dataSheet) == typeof(valAssistant_response)){
+
+        pm.expect(valAssistant_response).to.eql(valAssistant_dataSheet); 
+          
+      }
+
+      else
+      {
+        valCallBack(valAssistant_response,valAssistant_dataSheet, function(){});
+       
+       var ConValueAssistant=conversionData;
+       pm.expect(valAssistant_response).to.eql(ConValueAssistant);      
+        }
+    });
+}
+else{ postman.setNextRequest();}
+});
+
+}
+
+
+for(var n=0;n<jsonValue.assistant.length;n++){
+//*******Assertion of Key : assistant extension******
+pm.test("Assert Type of assistant extension"+j, function(){
+var valAssistant_response=jsonValue.assistant[n].extension;
+var valAssistant_dataSheet=pm.variables.get("assistant_extension"+j+n);
+var typeOfAssistant_dataSheet= pm.variables.get("typeOfObject");
+var typeOfAssistant_response=typeof valAssistant_response;
+
+var testResult =  pm.expect(typeOfAssistant_dataSheet).to.be.eql(typeof valAssistant_response);
+        
+if(testResult)
+{
+    pm.test("Assert value of assistant email"+j, function()
+    {
+        
+      if(typeof(valAssistant_dataSheet) == typeof(valAssistant_response)){
+
+        pm.expect(valAssistant_response).to.eql(valAssistant_dataSheet); 
+          
+      }
+
+      else
+      {
+        valCallBack(valAssistant_response,valAssistant_dataSheet, function(){});
+       
+       var ConValueAssistant=conversionData;
+       pm.expect(valAssistant_response).to.eql(ConValueAssistant);      
+        }
+    });
+}
+else{ postman.setNextRequest();}
+});
+
+}
+
+
+//*******Assertion of Key : qualifications People_ids******
+for(var n=0;n<jsonValue.qualifications.length;n++){
+pm.test("Assert Type of qualifications People_ids"+j, function(){
+var valQualifications_response=jsonValue.qualifications[n].earnedAt;
+var valQualifications_dataSheet=pm.variables.get("qualifications_earnedAt"+j+n);
+var typeOfQualifications_dataSheet= pm.variables.get("typeOfString");
+var typeOfQualifications_response=typeof valQualifications_response;
+
+var testResult =  pm.expect(typeOfQualifications_dataSheet).to.be.eql(typeof valQualifications_response);
+        
+if(testResult)
+{
+    pm.test("Assert value of qualifications People_ids"+j, function()
+    {
+        
+      if(typeof(valQualifications_dataSheet) == typeof(valQualifications_response)){
+
+        pm.expect(valQualifications_response).to.eql(valQualifications_dataSheet); 
+          
+      }
+
+      else
+      {
+        valCallBack(valQualifications_response,valQualifications_dataSheet, function(){});
+       
+       var ConValueQualifications=conversionData;
+       pm.expect(valQualifications_response).to.eql(ConValueQualifications);      
+        }
+    });
+}
+else{ postman.setNextRequest();}
+});
+
+}
+
+for(var n=0;n<jsonValue.qualifications.length;n++){
+pm.test("Assert Type of qualifications People_ids"+j, function(){
+var valQualifications_response=jsonValue.qualifications[n].title;
+var valQualifications_dataSheet=pm.variables.get("qualifications_title"+j+n);
+var typeOfQualifications_dataSheet= pm.variables.get("typeOfString");
+var typeOfQualifications_response=typeof valQualifications_response;
+
+var testResult =  pm.expect(typeOfQualifications_dataSheet).to.be.eql(typeof valQualifications_response);
+        
+if(testResult)
+{
+    pm.test("Assert value of qualifications People_ids"+j, function()
+    {
+        
+      if(typeof(valQualifications_dataSheet) == typeof(valQualifications_response)){
+
+        pm.expect(valQualifications_response).to.eql(valQualifications_dataSheet); 
+          
+      }
+
+      else
+      {
+        valCallBack(valQualifications_response,valQualifications_dataSheet, function(){});
+       
+       var ConValueQualifications=conversionData;
+       pm.expect(valQualifications_response).to.eql(ConValueQualifications);      
+        }
+    });
+}
+else{ postman.setNextRequest();}
+});
+
+}
+
+for(var n=0;n<jsonValue.qualifications.length;n++){
+pm.test("Assert Type of qualifications institution"+j, function(){
+var valQualifications_response=jsonValue.qualifications[n].institution;
+var valQualifications_dataSheet=pm.variables.get("qualifications_institution"+j+n);
+var typeOfQualifications_dataSheet= pm.variables.get("typeOfString");
+var typeOfQualifications_response=typeof valQualifications_response;
+
+var testResult =  pm.expect(typeOfQualifications_dataSheet).to.be.eql(typeof valQualifications_response);
+        
+if(testResult)
+{
+    pm.test("Assert value of qualifications institution"+j, function()
+    {
+        
+      if(typeof(valQualifications_dataSheet) == typeof(valQualifications_response)){
+
+        pm.expect(valQualifications_response).to.eql(valQualifications_dataSheet); 
+          
+      }
+
+      else
+      {
+        valCallBack(valQualifications_response,valQualifications_dataSheet, function(){});
+       
+       var ConValueQualifications=conversionData;
+       pm.expect(valQualifications_response).to.eql(ConValueQualifications);      
+        }
+    });
+}
+else{ postman.setNextRequest();}
+});
+
+}
+
+for(var n=0;n<jsonValue.qualifications.length;n++){
+pm.test("Assert Type of qualifications institution"+j, function(){
+var valQualifications_response=jsonValue.qualifications[n].institution;
+var valQualifications_dataSheet=pm.variables.get("qualifications_institution"+j+n);
+var typeOfQualifications_dataSheet= pm.variables.get("typeOfString");
+var typeOfQualifications_response=typeof valQualifications_response;
+
+var testResult =  pm.expect(typeOfQualifications_dataSheet).to.be.eql(typeof valQualifications_response);
+        
+if(testResult)
+{
+    pm.test("Assert value of qualifications institution"+j, function()
+    {
+        
+      if(typeof(valQualifications_dataSheet) == typeof(valQualifications_response)){
+
+        pm.expect(valQualifications_response).to.eql(valQualifications_dataSheet); 
+          
+      }
+
+      else
+      {
+        valCallBack(valQualifications_response,valQualifications_dataSheet, function(){});
+       
+       var ConValueQualifications=conversionData;
+       pm.expect(valQualifications_response).to.eql(ConValueQualifications);      
+        }
+    });
+}
+else{ postman.setNextRequest();}
+});
+
+}
+// //*******Assertion of type of : contactDetails People_ids******
+
+// var valContactDetails_response=jsonValue.contactDetails;
+// var lengthOfResponse = valContactDetails_response.length;
+
+// var typeOfContactDetails_dataSheet= pm.variables.get("typeOfContactDetails");
+// var typeOfContactDetails_response=typeof valContactDetails_response;
+// var typeOfContactDetails_label_dataSheet= pm.variables.get("typeOfContactDetails_label");
+// var typeOfContactDetails_value_dataSheet= pm.variables.get("typeOfContactDetails_value");
+// var typeOfContactDetails_icon_dataSheet= pm.variables.get("typeOfContactDetails_icon");
+// var typeOfContactDetails_isDefault_dataSheet= pm.variables.get("typeOfContactDetails_isDefault");
+// var typeOfContactDetails_lastModifiedAt_dataSheet= pm.variables.get("typeOfContactDetails_lastModifiedAt");
+// var testResultTypeOf;
+// pm.test("Assert Type of contactDetails People_ids"+j, function(){
+// var testResultTypeOf = pm.expect(typeOfContactDetails_dataSheet).to.be.eql(typeof valContactDetails_response);
+
+
+
+//*******Assertion of Key : contactDetails_label People_ids******
+
+if(testResultTypeOf){
+    
+    console.log("length......."+lengthOfResponse);
+    if(lengthOfResponse!=0){
+    
+   for(var i=0;i<lengthOfResponse;i++){
+    pm.test("Assert keys inside contactDetails",function()
+        {
+       
+        pm.expect(jsonValue.contactDetails[i]).to.have.all.keys('label','icon','value','isDefault','lastModifiedAt');
+        }); 
+    pm.test("Assert type of contactDetails_label People_ids "+j , function(){
+        
+        var typeOfContactDetails_label_response = typeof (jsonValue.contactDetails[i].label);
+        var valContactDetails_label_datasheet = pm.variables.get("person_contactDetails_label"+j+i) ;
+        var testResultTypeOfLabel = pm.expect(typeOfContactDetails_label_response ).to.be.eql(pm.variables.get("typeOfString"));
+     
+    if(testResultTypeOfLabel){
+    pm.test("Assert value contactDetails_label People_ids"+j, function(){
+        pm.expect(jsonValue.contactDetails[i].label).to.be.eql(valContactDetails_label_datasheet);
+    });
+	} 
+	});
+	
+	
+	//*******Assertion of Key : contactDetails_value People_ids******
+	
+	  pm.test("Assert type of contactDetails_value People_ids "+j , function(){
+        
+        var typeOfContactDetails_value_response = typeof (jsonValue.contactDetails[i].value);
+        var valContactDetails_value_datasheet = pm.variables.get("person_contactDetails_value"+j+i) ;
+        var testResultTypeOfLabel = pm.expect(typeOfContactDetails_value_response ).to.be.eql(pm.variables.get("typeOfString"));
+     
+    if(testResultTypeOfLabel){
+    pm.test("Assert value contactDetails_value People_ids"+j, function(){
+        pm.expect(jsonValue.contactDetails[i].value).to.be.eql(valContactDetails_value_datasheet);
+    });
+	} 
+	});
+	
+	//*******Assertion of Key : contactDetails_icon People_ids******
+	
+	  pm.test("Assert type of contactDetails_icon People_ids "+j , function(){
+        
+        var typeOfContactDetails_icon_response = typeof (jsonValue.contactDetails[i].icon);
+        var valContactDetails_icon_datasheet = pm.variables.get("person_contactDetails_icon"+j+i) ;
+        var testResultTypeOfIcon = pm.expect(typeOfContactDetails_icon_response ).to.be.eql(pm.variables.get("typeOfString"));
+     
+    if(testResultTypeOfIcon){
+    pm.test("Assert value contactDetails_icon People_ids"+j, function(){
+        pm.expect(jsonValue.contactDetails[i].icon).to.be.eql(valContactDetails_icon_datasheet);
+    });
+	} 
+	});
+	//*******Assertion of Key : contactDetails_isDefault People_ids******
+		  pm.test("Assert type of contactDetails_isDefault People_ids "+j , function(){
+        var valContactDetails_isDefault_response = jsonValue.contactDetails[i].isDefault;
+        var typeOfContactDetails_isDefault_response = typeof (jsonValue.contactDetails[i].isDefault);
+        var valContactDetails_isDefault_dataSheet = pm.variables.get("person_contactDetails_isDefault"+j+i) ;
+        var testResultTypeOfIsDefault = pm.expect(typeOfContactDetails_isDefault_response ).to.be.eql(pm.variables.get("typeOfBoolean"));
+     
+    if(testResultTypeOfIsDefault){
+		 if(typeof(valContactDetails_isDefault_dataSheet) == typeof(valContactDetails_isDefault_response))
+              {
+        
+                pm.expect(valContactDetails_isDefault_response).to.eql(valContactDetails_isDefault_dataSheet); 
+                  
+              }
+		else
+              {
+                valCallBack(valContactDetails_isDefault_response,valContactDetails_isDefault_dataSheet, function(){});
+               
+               var ConValueContactDetails_isDefault=conversionData;
+               pm.expect(valContactDetails_isDefault_response).to.eql(ConValueContactDetails_isDefault);      
+                }
+	}
+   else{ postman.setNextRequest();}	
+	});
+
+	//*******Assertion of Key : contactDetails_lastModified People_ids******
+	
+		
+	  pm.test("Assert type of contactDetails_lastModifiedAt People_ids "+j , function(){
+        
+        var typeOfContactDetails_lastModifiedAt_response = typeof (jsonValue.contactDetails[i].lastModifiedAt);
+        var valContactDetails_lastModifiedAt_datasheet = pm.variables.get("person_contactDetails_lastModifiedAt"+j+i) ;
+        var testResultTypeOfLastModifiedAt = pm.expect(typeOfContactDetails_lastModifiedAt_response ).to.be.eql(pm.variables.get("typeOfString"));
+     
+    if(testResultTypeOfLastModifiedAt){
+    pm.test("Assert value contactDetails_lastModifiedAt People_ids"+j, function(){
+        pm.expect(jsonValue.contactDetails[i].lastModifiedAt).to.be.eql(valContactDetails_lastModifiedAt_datasheet);
+    });
+	} 
+	});
+	
+
+
+//    }
+// }
+
+
+// else {
+    
+//     pm.test("Assert value of contactDetails when empty People_ids"+j, function()
+//     {
+//      var valContactDetails_response=jsonValue.contactDetails;
+// var valContactDetails_dataSheet=pm.variables.get("contactDetails"+j);
+// var typeOfContactDetails_dataSheet= pm.variables.get("typeOfContactDetails");
+// var typeOfContactDetails_response=typeof valContactDetails_response;
+
+// var testResult =  pm.expect(typeOfContactDetails_dataSheet).to.be.eql(typeof valContactDetails_response);
+
+
+//       if(typeof(valContactDetails_dataSheet) == typeof(valContactDetails_response)){
+
+//         pm.expect(valContactDetails_response).to.eql(valContactDetails_dataSheet); 
+          
+//       }
+
+//       else
+//       {
+//         valCallBack(valContactDetails_response,valContactDetails_dataSheet, function(){});
+       
+//        var ConValueContactDetails=conversionData;
+//        pm.expect(valContactDetails_response).to.eql(ConValueContactDetails);      
+//         }
+//     });
+
+// }
+// }
+// else{ postman.setNextRequest();
+    
+// }
+
+// });
+
+// //*******Assertion of Key : workHistory People_ids******
+
+// pm.test("Assert Type of workHistory People_ids"+j, function(){
+// var valWorkHistory_response=jsonValue.workHistory;
+// var valWorkHistory_dataSheet=pm.variables.get("workHistory"+j);
+// var typeOfWorkHistory_dataSheet= pm.variables.get("typeOfWorkHistory");
+// var typeOfWorkHistory_response=typeof valWorkHistory_response;
+
+// var testResult =  pm.expect(typeOfWorkHistory_dataSheet).to.be.eql(typeof valWorkHistory_response);
+        
+// if(testResult)
+// {
+//     pm.test("Assert value of workHistory People_ids"+j, function()
+//     {
+        
+//       if(typeof(valWorkHistory_dataSheet) == typeof(valWorkHistory_response)){
+
+//         pm.expect(valWorkHistory_response).to.eql(valWorkHistory_dataSheet); 
+          
+//       }
+
+//       else
+//       {
+//         valCallBack(valWorkHistory_response,valWorkHistory_dataSheet, function(){});
+       
+//        var ConValueWorkHistory=conversionData;
+//        pm.expect(valWorkHistory_response).to.eql(ConValueWorkHistory);      
+//         }
+//     });
+// }
+// else{ postman.setNextRequest();}
+// });
+
+//*******Assertion of Key : geoMobilityNotes People_ids******
+
+pm.test("Assert Type of geoMobilityNotes People_ids"+j, function(){
+var valGeoMobilityNotes_response=jsonValue.geoMobilityNotes;
+var valGeoMobilityNotes_dataSheet=pm.variables.get("person_geoMobilityNotes"+j);
+var typeOfGeoMobilityNotes_dataSheet= pm.variables.get("typeOfObject");
+var typeOfGeoMobilityNotes_response=typeof valGeoMobilityNotes_response;
+
+var testResult =  pm.expect(typeOfGeoMobilityNotes_dataSheet).to.be.eql(typeof valGeoMobilityNotes_response);
+        
+if(testResult)
+{
+    pm.test("Assert value of geoMobilityNotes People_ids"+j, function()
+    {
+        
+      if(typeof(valGeoMobilityNotes_dataSheet) == typeof(valGeoMobilityNotes_response)){
+
+        pm.expect(valGeoMobilityNotes_response).to.eql(valGeoMobilityNotes_dataSheet); 
+          
+      }
+
+      else
+      {
+        valCallBack(valGeoMobilityNotes_response,valGeoMobilityNotes_dataSheet, function(){});
+       
+       var ConValueGeoMobilityNotes=conversionData;
+       pm.expect(valGeoMobilityNotes_response).to.eql(ConValueGeoMobilityNotes);      
+        }
+    });
+}
+else{ postman.setNextRequest();}
+});
+
+//*******Assertion of Key : birthday People_ids******
+
+pm.test("Assert Type of birthday People_ids"+j, function(){
+var valBirthday_response=jsonValue.birthday;
+var valBirthday_dataSheet=pm.variables.get("person_birthday"+j);
+var typeOfBirthday_dataSheet= pm.variables.get("typeOfObject");
+var typeOfBirthday_response=typeof valBirthday_response;
+
+var testResult =  pm.expect(typeOfBirthday_dataSheet).to.be.eql(typeof valBirthday_response);
+        
+if(testResult)
+{
+    pm.test("Assert value of birthday People_ids"+j, function()
+    {
+        
+      if(typeof(valBirthday_dataSheet) == typeof(valBirthday_response)){
+
+        pm.expect(valBirthday_response).to.eql(valBirthday_dataSheet); 
+          
+      }
+
+      else
+      {
+        valCallBack(valBirthday_response,valBirthday_dataSheet, function(){});
+       
+       var ConValueBirthday=conversionData;
+       pm.expect(valBirthday_response).to.eql(ConValueBirthday);      
+        }
+    });
+}
+else{ postman.setNextRequest();}
+});
+//*******Assertion of Key : principalNationalityId People_ids******
+
+pm.test("Assert Type of principalNationalityId People_ids"+j, function(){
+var valPrincipalNationalityId_response=jsonValue.principalNationalityId;
+var valPrincipalNationalityId_dataSheet=pm.variables.get("person_principalNationalityId"+j);
+var typeOfPrincipalNationalityId_dataSheet= pm.variables.get("typeOfObject");
+var typeOfPrincipalNationalityId_response=typeof valPrincipalNationalityId_response;
+
+var testResult =  pm.expect(typeOfPrincipalNationalityId_dataSheet).to.be.eql(typeof valPrincipalNationalityId_response);
+        
+if(testResult)
+{
+    pm.test("Assert value of principalNationalityId People_ids"+j, function()
+    {
+        
+      if(typeof(valPrincipalNationalityId_dataSheet) == typeof(valPrincipalNationalityId_response)){
+
+        pm.expect(valPrincipalNationalityId_response).to.eql(valPrincipalNationalityId_dataSheet); 
+          
+      }
+
+      else
+      {
+        valCallBack(valPrincipalNationalityId_response,valPrincipalNationalityId_dataSheet, function(){});
+       
+       var ConValuePrincipalNationalityId=conversionData;
+       pm.expect(valPrincipalNationalityId_response).to.eql(ConValuePrincipalNationalityId);      
+        }
+    });
+}
+else{ postman.setNextRequest();}
+});
+
+
+
+
+//*******Assertion of Key : languages People_ids******
+
+
+pm.test("Assert Type of languages People_ids"+j, function(){
+var valLanguages_response=jsonValue.languages;
+var valLanguages_dataSheet=pm.variables.get("person_languages"+j);
+var typeOfLanguages_dataSheet= pm.variables.get("typeOfObject");
+var typeOfLanguages_response=typeof valLanguages_response;
+
+var testResult =  pm.expect(typeOfLanguages_dataSheet).to.be.eql(typeof valLanguages_response);
+        
+if(testResult)
+{
+    pm.test("Assert value of languages People_ids"+j, function()
+    {
+        
+      if(typeof(valLanguages_dataSheet) == typeof(valLanguages_response)){
+
+        pm.expect(valLanguages_response).to.eql(valLanguages_dataSheet); 
+          
+      }
+
+      else
+      {
+        valCallBack(valLanguages_response,valLanguages_dataSheet, function(){});
+       
+       var ConValueLanguages=conversionData;
+       pm.expect(valLanguages_response).to.eql(ConValueLanguages);      
+        }
+    });
+}
+else{ postman.setNextRequest();}
+});
+//*******Assertion of Key : homeCountryId People_ids******
+
+pm.test("Assert Type of homeCountryId People_ids"+j, function(){
+var valHomeCountryId_response=jsonValue.homeCountryId;
+var valHomeCountryId_dataSheet=pm.variables.get("person_homeCountryId"+j);
+var typeOfHomeCountryId_dataSheet= pm.variables.get("typeOfObject");
+var typeOfHomeCountryId_response=typeof valHomeCountryId_response;
+
+var testResult =  pm.expect(typeOfHomeCountryId_dataSheet).to.be.eql(typeof valHomeCountryId_response);
+        
+if(testResult)
+{
+    pm.test("Assert value of homeCountryId People_ids"+j, function()
+    {
+        
+      if(typeof(valHomeCountryId_dataSheet) == typeof(valHomeCountryId_response)){
+
+        pm.expect(valHomeCountryId_response).to.eql(valHomeCountryId_dataSheet); 
+          
+      }
+
+      else
+      {
+        valCallBack(valHomeCountryId_response,valHomeCountryId_dataSheet, function(){});
+       
+       var ConValueHomeCountryId=conversionData;
+       pm.expect(valHomeCountryId_response).to.eql(ConValueHomeCountryId);      
+        }
+    });
+}
+else{ postman.setNextRequest();}
+});
+
+
+//*******Assertion of Key : maritalStatusId People_ids******
+
+pm.test("Assert Type of maritalStatusId People_ids"+j, function(){
+var valMaritalStatusId_response=jsonValue.maritalStatusId;
+var valMaritalStatusId_dataSheet=pm.variables.get("person_maritalStatusId"+j);
+var typeOfMaritalStatusId_dataSheet= pm.variables.get("typeOfObject");
+var typeOfMaritalStatusId_response=typeof valMaritalStatusId_response;
+
+var testResult =  pm.expect(typeOfMaritalStatusId_dataSheet).to.be.eql(typeof valMaritalStatusId_response);
+        
+if(testResult)
+{
+    pm.test("Assert value of maritalStatusId People_ids"+j, function()
+    {
+        
+      if(typeof(valMaritalStatusId_dataSheet) == typeof(valMaritalStatusId_response)){
+
+        pm.expect(valMaritalStatusId_response).to.eql(valMaritalStatusId_dataSheet); 
+          
+      }
+
+      else
+      {
+        valCallBack(valMaritalStatusId_response,valMaritalStatusId_dataSheet, function(){});
+       
+       var ConValueMaritalStatusId=conversionData;
+       pm.expect(valMaritalStatusId_response).to.eql(ConValueMaritalStatusId);      
+        }
+    });
+}
+else{ postman.setNextRequest();}
+});
+
+
+
+//*******Assertion of Key : spouseName People_ids******
+
+
+pm.test("Assert Type of spouseName People_ids"+j, function(){
+var valSpouseName_response=jsonValue.spouseName;
+var valSpouseName_dataSheet=pm.variables.get("person_spouseName"+j);
+var typeOfSpouseName_dataSheet= pm.variables.get("typeOfObject");
+var typeOfSpouseName_response=typeof valSpouseName_response;
+
+var testResult =  pm.expect(typeOfSpouseName_dataSheet).to.be.eql(typeof valSpouseName_response);
+        
+if(testResult)
+{
+    pm.test("Assert value of spouseName People_ids"+j, function()
+    {
+        
+      if(typeof(valSpouseName_dataSheet) == typeof(valSpouseName_response)){
+
+        pm.expect(valSpouseName_response).to.eql(valSpouseName_dataSheet); 
+          
+      }
+
+      else
+      {
+        valCallBack(valSpouseName_response,valSpouseName_dataSheet, function(){});
+       
+       var ConValueSpouseName=conversionData;
+       pm.expect(valSpouseName_response).to.eql(ConValueSpouseName);      
+        }
+    });
+}
+else{ postman.setNextRequest();}
+});
+//*******Assertion of Key : children People_ids******
+
+
+pm.test("Assert Type of children People_ids"+j, function(){
+var valChildren_response=jsonValue.children;
+var valChildren_dataSheet=pm.variables.get("person_children"+j);
+var typeOfChildren_dataSheet= pm.variables.get("typeOfObject");
+var typeOfChildren_response=typeof valChildren_response;
+
+var testResult =  pm.expect(typeOfChildren_dataSheet).to.be.eql(typeof valChildren_response);
+        
+if(testResult)
+{
+    pm.test("Assert value of children People_ids"+j, function()
+    {
+        
+      if(typeof(valChildren_dataSheet) == typeof(valChildren_response)){
+
+        pm.expect(valChildren_response).to.eql(valChildren_dataSheet); 
+          
+      }
+
+      else
+      {
+        valCallBack(valChildren_response,valChildren_dataSheet, function(){});
+       
+       var ConValueChildren=conversionData;
+       pm.expect(valChildren_response).to.eql(ConValueChildren);      
+        }
+    });
+}
+else{ postman.setNextRequest();}
+});
+
+
+//*******Assertion of Key : whoKnowsBest People_ids******
+
+pm.test("Assert Type of whoKnowsBest People_ids"+j, function(){
+var valWhoKnowsBest_response=jsonValue.whoKnowsBest;
+var valWhoKnowsBest_dataSheet=pm.variables.get("person_whoKnowsBest"+j);
+var typeOfWhoKnowsBest_dataSheet= pm.variables.get("typeOfObject");
+var typeOfWhoKnowsBest_response=typeof valWhoKnowsBest_response;
+
+var testResult =  pm.expect(typeOfWhoKnowsBest_dataSheet).to.be.eql(typeof valWhoKnowsBest_response);
+        
+if(testResult)
+{
+    pm.test("Assert value of whoKnowsBest People_ids"+j, function()
+    {
+        
+      if(typeof(valWhoKnowsBest_dataSheet) == typeof(valWhoKnowsBest_response)){
+
+        pm.expect(valWhoKnowsBest_response).to.eql(valWhoKnowsBest_dataSheet); 
+          
+      }
+
+      else
+      {
+        valCallBack(valWhoKnowsBest_response,valWhoKnowsBest_dataSheet, function(){});
+       
+       var ConValueWhoKnowsBest=conversionData;
+       pm.expect(valWhoKnowsBest_response).to.eql(ConValueWhoKnowsBest);      
+        }
+    });
+}
+else{ postman.setNextRequest();}
+});
+
+
+// //*******Assertion of Key : Blocks People_ids *****
+// pm.test("Assert of Blocks People_ids"+j, function(){
+// var valBlocks_response=jsonValue.blocks;
+
+// var typeOfBlocks_Type_dataSheet= pm.variables.get("typeOfBlocks_Type");
+// var typeOfBlocks_ExpirationDate_dataSheet= pm.variables.get("typeOfBlocks_ExpirationDate");
+
+
+//     var i;
+
+//     for(i=0;i<valBlocks_response.length;i++){
+
+//         pm.test("Assert keys inside Blocks",function()
+//         {
+//         pm.expect(jsonValue.blocks[i]).to.have.all.keys('type','expirationDate');
+//         });
+
+// //*******Assertion of Key : Blocks_Type People_ids *****
+// pm.test("Assert Type of Blocks_Type" +i+ "People_ids", function(){
+// var valBlocks_Type_response=jsonValue.blocks[i].type;
+// var valBlocks_Type_dataSheet=pm.variables.get("blocks_type"+j+i);
+// var typeOfBlocks_Type_response=typeof valBlocks_Type_response;
+// var typeOfBlocks_Type_dataSheet = pm.variables.get("typeOfBlocks_type");
+// var testResult =  pm.expect(typeOfBlocks_Type_dataSheet).to.be.eql(typeof valBlocks_Type_response);
+        
+// if(testResult)
+// {
+    
+//     pm.test("Assert value of blocks_type "+i+  "People_ids", function()
+//     {
+        
+//       if(typeof(valBlocks_Type_dataSheet) == typeof(valBlocks_Type_response)){
+
+//         pm.expect(valBlocks_Type_response).to.eql(valBlocks_Type_dataSheet); 
+          
+//       }
+
+//       else
+//       {
+//         valCallBack(valBlocks_Type_response,valBlocks_Type_dataSheet, function(){});
+       
+//        var ConValueBlocks_Type=conversionData;
+//        pm.expect(valBlocks_Type_response).to.eql(ConValueBlocks_Type);      
+//         }
+//     });
+// }
+// else{ postman.setNextRequest();}
+// });
+
+
+// //*******Assertion of Key : Blocks_ExpirationDate People_ids *****
+// pm.test("Assert Type of Blocks_ExpirationDate " +i+" People_ids", function(){
+// var valBlocks_ExpirationDate_response=jsonValue.blocks[i].expirationDate;
+// var valBlocks_ExpirationDate_dataSheet=pm.variables.get("blocks_expirationDate"+j+i);
+// var typeOfBlocks_ExpirationDate_response=typeof valBlocks_ExpirationDate_response;
+// var typeOfBlocks_ExpirationDate_dataSheet = pm.variables.get("typeOfBlocks_expirationDate");
+
+// var testResult =  pm.expect(typeOfBlocks_ExpirationDate_dataSheet).to.be.eql(typeof valBlocks_ExpirationDate_response);
+        
+// if(testResult)
+// {
+//     pm.test("Assert value of blocks_expirationDate"+i+" Relationship", function()
+//     {
+        
+//       if(typeof(valBlocks_ExpirationDate_dataSheet) == typeof(valBlocks_ExpirationDate_response)){
+
+//         pm.expect(valBlocks_ExpirationDate_response).to.eql(valBlocks_ExpirationDate_dataSheet); 
+          
+//       }
+
+//       else
+//       {
+//         valCallBack(valBlocks_ExpirationDate_response,valBlocks_ExpirationDate_dataSheet, function(){});
+       
+//        var ConValueBlocks_ExpirationDate=conversionData;
+//        pm.expect(valBlocks_ExpirationDate_response).to.eql(ConValueBlocks_ExpirationDate);      
+//         }
+//     });
+// }
+// else{ postman.setNextRequest();}
+// });
+// }
+// });  
+
+// var valRelationships_response=jsonData[0].relationships;
+// var lengthOfResponse = valRelationships_response.length;
+
+// var typeOfRelationships_dataSheet= pm.variables.get("typeOfRelationships");
+// var typeOfRelationships_response=typeof valRelationships_response;
+
+
+// //*******Assertion of type of : relationships People_ids******
+
+// var valRelationships_response=jsonValue.relationships;
+// var lengthOfResponse = valRelationships_response.length;
+
+// var typeOfRelationships_dataSheet= pm.variables.get("typeOfRelationships");
+// var typeOfRelationships_response=typeof valRelationships_response;
+// var typeOfRelationships_userId_dataSheet= pm.variables.get("typeOfRelationships_userId");
+// var typeOfRelationships_relationshipTypeId_dataSheet= pm.variables.get("typeOfRelationships_relationshipTypeId");
+// var testResultTypeOf;
+// pm.test("Assert Type of relationships People_ids"+j, function(){
+// var testResultTypeOf = pm.expect(typeOfRelationships_dataSheet).to.be.eql(typeof valRelationships_response);
+
+
+
+// //*******Assertion of Key : relationships_userId People_ids******
+
+// if(testResultTypeOf){
+    
+//     console.log("length......."+lengthOfResponse);
+//     if(lengthOfResponse!=0){
+    
+//    for(var i=0;i<lengthOfResponse;i++){
+//     pm.test("Assert keys inside relations",function()
+//         {
+       
+//         pm.expect(jsonValue.relationships[i]).to.have.all.keys('userId','relationshipTypeId');
+//         }); 
+//     pm.test("Assert type of relationships_userId People_ids "+j , function(){
+        
+//         var typeOfRelationships_userId_response = typeof (jsonValue.relationships[i].userId);
+//         var valRelationships_userId_datasheet = pm.variables.get("relationships_userId"+j+i) ;
+//         var testResultTypeOfUserId = pm.expect(typeOfRelationships_userId_response ).to.be.eql(pm.variables.get("typeOfRelationships_userId"));
+     
+//     if(testResultTypeOfUserId){
+//     pm.test("Assert value relationships_userId People_ids"+j, function(){
+//         pm.expect(jsonValue.relationships[i].userId).to.be.eql(valRelationships_userId_datasheet.toString());
+//     });} }) 
+// //*******Assertion of Key : relationships_relationshipTypeId People_ids******    
+//       pm.test("Assert type of relationships_relationshipTypeId People_ids "+j , function(){
+//         var valRelationships_relationshipTypeId_datasheet = pm.variables.get("relationships_relationshipTypeId"+j+i) ;
+//         var typeOfRelationships_relationshipTypeId_response = typeof (jsonValue.relationships[i].relationshipTypeId);
+        
+//         var testResultTypeOfrelationshipTypeId = pm.expect(typeOfRelationships_relationshipTypeId_response ).to.be.eql(pm.variables.get("typeOfRelationships_relationshipTypeId"));
+     
+    
+//     if(testResultTypeOfrelationshipTypeId){
+//     pm.test("Assert value relationships_relationshipTypeId People_ids"+j, function(){
+//         pm.expect(jsonValue.relationships[i].relationshipTypeId).to.be.eql(valRelationships_relationshipTypeId_datasheet.toString());
+//     });} }) ;
+//    }
+// }
+// else {
+    
+//     pm.test("Assert value of relationships when empty People_ids"+j, function()
+//     {
+//      var valRelationships_response=jsonValue.relationships;
+// var valRelationships_dataSheet=pm.variables.get("relationships"+j);
+// var typeOfRelationships_dataSheet= pm.variables.get("typeOfRelationships");
+// var typeOfRelationships_response=typeof valRelationships_response;
+
+// var testResult =  pm.expect(typeOfRelationships_dataSheet).to.be.eql(typeof valRelationships_response);
+
+
+//       if(typeof(valRelationships_dataSheet) == typeof(valRelationships_response)){
+
+//         pm.expect(valRelationships_response).to.eql(valRelationships_dataSheet); 
+          
+//       }
+
+//       else
+//       {
+//         valCallBack(valRelationships_response,valRelationships_dataSheet, function(){});
+       
+//        var ConValueRelationships=conversionData;
+//        pm.expect(valRelationships_response).to.eql(ConValueRelationships);      
+//         }
+//     });
+
+// }
+// }
+// else{ postman.setNextRequest();
+    
+// }
+
+// });
+//*******Assertion of Key : rassignmentIds People_ids********
+
+
+pm.test("Assert Type of assignmentIds People_ids"+j, function(){
+var valAssignmentIds_response=jsonValue.assignmentIds;
+var valAssignmentIds_dataSheet=pm.variables.get("person_assignmentIds"+j);
+var typeOfAssignmentIds_dataSheet= pm.variables.get("typeOfObject");
+var assignmentIds_count= pm.variables.get("assignmentIds_count"+j);
+var typeOfAssignmentIds_response=typeof valAssignmentIds_response;
+
+var testResult =  pm.expect(typeOfAssignmentIds_dataSheet).to.be.eql(typeof valAssignmentIds_response);
+
+
+if(testResult)
+{
+pm.test("Assert count  of assignmentIds People_ids"+j, function(){
+    var objToStr = JSON.stringify(valAssignmentIds_response);
+    var len = objToStr.split(",").length;
+    pm.expect(len).to.be.eql(assignmentIds_count);
+});
+}
+else{ postman.setNextRequest();
+}
+});
+
+
+pm.test("Assert Type of totalResults", function(){
+var valAssignmentIds_response=jsonValue.totalResults;
+var valAssignmentIds_dataSheet=pm.variables.get("person_totalResults"+j);
+var typeOfAssignmentIds_dataSheet= pm.variables.get("typeOfNumber");
+var assignmentIds_count= pm.variables.get("person_totalResults"+j);
+var typeOfAssignmentIds_response=typeof valAssignmentIds_response;
+
+var testResult =  pm.expect(typeOfAssignmentIds_response).to.be.eql(typeOfAssignmentIds_dataSheet);
+
+
+if(testResult)
+{
+    pm.test("Assert value of totalResults "+j, function()
+    {
+        
+      if(typeOfAssignmentIds_response == (typeOfAssignmentIds_dataSheet)){
+
+        pm.expect(valAssignmentIds_response).to.eql(valAssignmentIds_dataSheet); 
+          
+      }
+
+      else
+      {
+        valCallBack(valWhoKnowsBest_response,valWhoKnowsBest_dataSheet, function(){});
+       
+       var ConValueWhoKnowsBest=conversionData;
+       pm.expect(valWhoKnowsBest_response).to.eql(ConValueWhoKnowsBest);      
+        }
+    });
+}
+else{ postman.setNextRequest();}
+});
+
+   }}}}
+
+
